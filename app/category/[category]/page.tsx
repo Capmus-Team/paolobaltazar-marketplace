@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 /* eslint-disable */
 import { ListingCard } from '@/components/ListingCard'
 import { notFound } from 'next/navigation'
