@@ -16,7 +16,19 @@ function normalize(str: string) {
   return str.toLowerCase().replace(/&/g, 'and').replace(/\s+/g, '-')
 }
 
-export default async function CategoryPage({ params }: { params: { category: string } }) {
+interface PageProps {
+  params: {
+    category: string
+  }
+}
+
+export async function generateStaticParams() {
+  return validCategories.map((category) => ({
+    category: normalize(category),
+  }))
+}
+
+export default async function CategoryPage({ params }: PageProps) {
   const { category } = params;
   const categoryName = validCategories.find(
     (cat) => normalize(cat) === category
@@ -43,7 +55,7 @@ export default async function CategoryPage({ params }: { params: { category: str
               id: listing.id,
               title: listing.title,
               price: listing.price,
-              location: listing.location, // Add location if you have it
+              location: listing.location,
               imageUrl: listing.img,
               category: listing.category || '',
             }} />
@@ -52,4 +64,4 @@ export default async function CategoryPage({ params }: { params: { category: str
       </main>
     </div>
   )
-} 
+}
