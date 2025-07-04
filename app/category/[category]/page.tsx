@@ -16,7 +16,7 @@ function normalize(str: string) {
   return str.toLowerCase().replace(/&/g, 'and').replace(/\s+/g, '-')
 }
 
-export default async function CategoryPage({ params }: { params: { category: string } }) {
+export default async function Page({ params }: { params: { category: string } }) {
   const { category } = params;
   const categoryName = validCategories.find(
     (cat) => normalize(cat) === category
