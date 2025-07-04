@@ -10,7 +10,7 @@ export default async function Home() {
   return (
     <div className="flex min-h-screen">
       <main className="flex-1 p-8 bg-gray-50">
-        <h1 className="text-3xl font-bold mb-8">Today's picks</h1>
+        <h1 className="text-3xl font-bold mb-8">Today&apos;s picks</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {error && <p className="col-span-full text-center text-red-500">Failed to load listings.</p>}
           {listings && listings.length === 0 && (
