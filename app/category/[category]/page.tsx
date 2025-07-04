@@ -1,28 +1,50 @@
 import { Sidebar } from '@/components/Sidebar'
 import { ListingCard, Listing } from '@/components/ListingCard'
+import { notFound } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
-export default async function Home() {
+const validCategories = [
+  'Vehicles',
+  'Property Rentals',
+  'Apparel',
+  'Electronics',
+  'Toys & Games',
+  'Sporting Goods',
+  'Garden & Outdoor',
+]
+
+function normalize(str: string) {
+  return str.toLowerCase().replace(/&/g, 'and').replace(/\s+/g, '-')
+}
+
+export default async function CategoryPage({ params }: { params: { category: string } }) {
+  const { category } = params;
+  const categoryName = validCategories.find(
+    (cat) => normalize(cat) === category
+  )
+  if (!categoryName) return notFound()
+
   const { data: listings, error } = await supabase
     .from('listings')
     .select('*')
+    .eq('category', categoryName)
     .order('created_at', { ascending: false })
 
   return (
     <div className="flex min-h-screen">
       <main className="flex-1 p-8 bg-gray-50">
-        <h1 className="text-3xl font-bold mb-8">Today's picks</h1>
+        <h1 className="text-3xl font-bold mb-8">{categoryName}</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {error && <p className="col-span-full text-center text-red-500">Failed to load listings.</p>}
           {listings && listings.length === 0 && (
-            <p className="col-span-full text-center text-gray-500">No items listed yet.</p>
+            <p className="col-span-full text-center text-gray-500">No items listed in this category.</p>
           )}
           {listings && listings.map(listing => (
             <ListingCard key={listing.id} listing={{
               id: listing.id,
               title: listing.title,
               price: listing.price,
-              location: listing.location || '',
+              location: listing.location, // Add location if you have it
               imageUrl: listing.img,
               category: listing.category || '',
             }} />
@@ -31,4 +53,4 @@ export default async function Home() {
       </main>
     </div>
   )
-}
+} 
