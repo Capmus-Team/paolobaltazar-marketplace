@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { supabase } from "@/lib/supabase"
 import { Upload } from "lucide-react"
+import Image from "next/image"
 
 const categories = [
   "Vehicles",
@@ -46,7 +47,7 @@ export default function CreateItemPage() {
     if (file) {
       const fileExt = file.name.split('.').pop()
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${fileExt}`
-      const { data, error: uploadError } = await supabase.storage.from('listing-images').upload(fileName, file)
+      const { error: uploadError } = await supabase.storage.from('listing-images').upload(fileName, file)
       if (uploadError) {
         setError("Failed to upload image.")
         setLoading(false)
@@ -153,7 +154,7 @@ export default function CreateItemPage() {
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-bold mb-4">Preview</h2>
           <div className="aspect-square bg-gray-100 rounded-lg mb-4 flex items-center justify-center">
-            {imgPreview ? <img src={imgPreview} alt="Preview" className="object-cover h-full w-full rounded-lg" /> : <span className="text-gray-400">Image preview</span>}
+            {imgPreview ? <Image src={imgPreview} alt="Preview" width={400} height={400} className="object-cover h-full w-full rounded-lg" /> : <span className="text-gray-400">Image preview</span>}
           </div>
           <div className="space-y-2">
             <h3 className="text-lg font-semibold">{title || "Title"}</h3>
