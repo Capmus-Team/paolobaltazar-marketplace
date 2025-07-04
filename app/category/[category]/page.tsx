@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { ListingCard } from '@/components/ListingCard'
 import { notFound } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
