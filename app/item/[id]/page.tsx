@@ -40,6 +40,9 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
             <p className="text-sm text-gray-500 mt-2">
               Listed {listing.created_at ? new Date(listing.created_at).toLocaleString() : ''}
             </p>
+            {listing.description && (
+              <p className="mt-4 text-base text-gray-700 whitespace-pre-line">{listing.description}</p>
+            )}
           </div>
           <div className="p-4 border rounded-lg">
             <h2 className="font-semibold">Seller Information</h2>

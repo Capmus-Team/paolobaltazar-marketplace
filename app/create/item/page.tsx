@@ -37,6 +37,11 @@ export default function CreateItemPage() {
     setLoading(true)
     setSuccess("")
     setError("")
+    if (!file || !title.trim() || !price.trim() || !email.trim() || !category.trim() || !location.trim() || !description.trim()) {
+      setError("All fields are required.")
+      setLoading(false)
+      return
+    }
     let imgUrl = ""
     if (file) {
       const fileExt = file.name.split('.').pop()
@@ -84,10 +89,6 @@ export default function CreateItemPage() {
     }
   }
 
-  function handleFileClick() {
-    fileInputRef.current?.click()
-  }
-
   return (
     <div className="flex justify-center p-8">
       <form onSubmit={handleSubmit} className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -95,7 +96,6 @@ export default function CreateItemPage() {
           <label
             htmlFor="file-upload"
             className="flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition hover:bg-gray-50"
-            onClick={handleFileClick}
             style={{ minHeight: 180 }}
           >
             <Upload className="w-12 h-12 text-gray-400 mx-auto" />
