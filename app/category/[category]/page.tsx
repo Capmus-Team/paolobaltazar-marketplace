@@ -29,7 +29,7 @@ export async function generateStaticParams() {
   }))
 }
 
-export default async function CategoryPage({ params }: PageProps) {
+export default async function CategoryPage({ params }: any) {
   const { category } = params;
   const categoryName = validCategories.find(
     (cat) => normalize(cat) === category

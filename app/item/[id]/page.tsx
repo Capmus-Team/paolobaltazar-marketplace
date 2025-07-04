@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Image from "next/image"
 import { supabase } from "@/lib/supabase"
 import { notFound } from "next/navigation"
 import { MessageForm } from "@/components/MessageForm"
 
-export default async function ItemPage({ params }: { params: { id: string } }) {
+export default async function ItemPage({ params }: any) {
   const { id } = params
   const { data: listing, error } = await supabase
     .from('listings')
