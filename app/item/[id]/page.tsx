@@ -1,6 +1,3 @@
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Input } from "@/components/ui/input"
 import Image from "next/image"
 import { supabase } from "@/lib/supabase"
 import { notFound } from "next/navigation"

@@ -1,5 +1,4 @@
-import { Sidebar } from '@/components/Sidebar'
-import { ListingCard, Listing } from '@/components/ListingCard'
+import { ListingCard } from '@/components/ListingCard'
 import { notFound } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 

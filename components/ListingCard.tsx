@@ -1,4 +1,4 @@
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { Card, CardFooter } from "@/components/ui/card"
 import Image from "next/image"
 import Link from "next/link"
 

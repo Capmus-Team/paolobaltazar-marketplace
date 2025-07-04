@@ -1,4 +1,4 @@
-import { Bell, User, Facebook, Store } from 'lucide-react'
+import { Bell, User, Store } from 'lucide-react'
 
 export function Header() {
   return (
