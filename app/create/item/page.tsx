@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -8,6 +8,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { supabase } from "@/lib/supabase"
 import { Upload } from "lucide-react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
+import { User } from '@supabase/supabase-js'
 
 const categories = [
   "Vehicles",
@@ -20,29 +22,49 @@ const categories = [
 ]
 
 export default function CreateItemPage() {
+  const router = useRouter()
   const [file, setFile] = useState<File | null>(null)
   const [imgPreview, setImgPreview] = useState<string>("")
   const [title, setTitle] = useState("")
   const [price, setPrice] = useState("")
-  const [email, setEmail] = useState("")
   const [description, setDescription] = useState("")
   const [category, setCategory] = useState(categories[0])
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState("")
   const [error, setError] = useState("")
   const [location, setLocation] = useState("")
+  const [user, setUser] = useState<User | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        router.push('/auth/login')
+        return
+      }
+      setUser(user)
+    }
+    getUser()
+  }, [router])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (!user) {
+      setError("Please login to create a listing")
+      return
+    }
+
     setLoading(true)
     setSuccess("")
     setError("")
-    if (!file || !title.trim() || !price.trim() || !email.trim() || !category.trim() || !location.trim() || !description.trim()) {
+    
+    if (!file || !title.trim() || !price.trim() || !category.trim() || !location.trim() || !description.trim()) {
       setError("All fields are required.")
       setLoading(false)
       return
     }
+
     let imgUrl = ""
     if (file) {
       const fileExt = file.name.split('.').pop()
@@ -56,9 +78,20 @@ export default function CreateItemPage() {
       const { data: publicUrlData } = supabase.storage.from('listing-images').getPublicUrl(fileName)
       imgUrl = publicUrlData.publicUrl
     }
+
     const { error: insertError } = await supabase.from("listings").insert([
-      { img: imgUrl, title, price: Number(price), email, description, category, location }
+      { 
+        img: imgUrl, 
+        title, 
+        price: Number(price), 
+        email: user.email,
+        user_id: user.id,
+        description, 
+        category, 
+        location 
+      }
     ])
+
     setLoading(false)
     if (insertError) {
       setError("Failed to create listing.")
@@ -68,11 +101,11 @@ export default function CreateItemPage() {
       setImgPreview("")
       setTitle("")
       setPrice("")
-      setEmail("")
       setDescription("")
       setCategory(categories[0])
       setLocation("")
       if (fileInputRef.current) fileInputRef.current.value = ""
+      router.push('/')
     }
   }
 
@@ -122,10 +155,6 @@ export default function CreateItemPage() {
               <Input id="price" placeholder="Price" type="number" value={price} onChange={e => setPrice(e.target.value)} />
             </div>
             <div>
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" placeholder="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} />
-            </div>
-            <div>
               <Label htmlFor="category">Category</Label>
               <select
                 id="category"
@@ -161,7 +190,7 @@ export default function CreateItemPage() {
             <p className="text-2xl font-bold">{price ? `$${price}` : "Price"}</p>
             <div>
               <h4 className="font-semibold">Seller Email</h4>
-              <p>{email || "Email"}</p>
+              <p>{user?.email || "Email"}</p>
             </div>
             <p className="text-sm text-gray-500">{description || "Description"}</p>
             <p className="text-sm text-gray-500">{location || "Location"}</p>
@@ -171,4 +200,4 @@ export default function CreateItemPage() {
       </form>
     </div>
   )
-} 
+}
